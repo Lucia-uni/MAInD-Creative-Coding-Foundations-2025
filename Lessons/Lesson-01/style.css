@@ -1,0 +1,24 @@
+img{
+    width: 200px;
+}
+
+ul{
+    list-style: none;
+    padding-left: 0;
+}
+
+li{
+    background-color: pink;
+}
+
+.on-sale{
+    background-color: yellow;
+}
+
+#best-one{
+    background-color: turquoise;
+}
+
+a:hover li{
+    border: 3px solid black;
+}
