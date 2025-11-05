@@ -9,13 +9,43 @@
     <script src="assets/script.js" defer></script>
 </head>
 <body>
-    <main>
-        <aside id="side" class="box">Aside</aside>
+<header>
 
-        <section class="box">
-            <article>element A</article>
-            <article>element A</article>
-        </section>
+        <!--title-->
+        <h1>Quotes & Aphorism</h1>
+
+        <!--input and add button-->
+        <div id="add-container">
+            <input type="text" id="task-input" placeholder="Add a new quote ...">
+            <button id="add-btn">+</button>            
+        </div>
+
+        <!--view list mode toggle-->
+        <div id="view-toggle-container">
+            <button id="list-view-btn" class="toggle-btn">List view</button>
+            <button id="card-view-btn" class="toggle-btn">Card view</button>
+        </div>
+
+    </header>
+
+    <main>
+
+        <!--to-do list-->
+        <div id="task-list-container" class="card-view">
+            <div>
+                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
+                <p class="author">Albert Einstein</p>
+            </div>
+            <div>
+                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
+                <p class="author">Albert Einstein</p>
+            </div>
+            <div>
+                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
+                <p class="author">Albert Einstein</p>
+            </div>
+        </div>
+
     </main>
     
 </body>

@@ -1,20 +1,136 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+/*general rules*/
+
+html {
+    font-size: 16px;
+    font-family: serif;
+    background-color: whitesmoke;
+}
+
+h1 {
+    text-align: center;
+}
+
+.quote {
+    font-style: italic;
+}
+
+.author {
+    text-align: right;
+}
+
+input, button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: none;
+    font: inherit;
+    color: inherit;
+    outline: none;
+    box-sizing: border-box;
+}
+
+button {
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+/*input and add button*/
+
+#add-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#task-input {
+    width: 100%;
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+
+/*view list mode toggle*/
+
+#view-toggle-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.toggle-btn {
+    background-color:#d89dad;
+    width: 50%;
+}
+
+
+/*to-do list*/
+
+/*card-view*/
+
+.card-view {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+}
+
+div {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+}
+
+.card-view div {
+    background-color: #b0c1b1;
+    height: 6rem;
+    border: 1px solid black;
+    border-radius: 1rem;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+
+/*list-view*/
+
+.list-view {
+    border: 1px solid black;
+    border-radius: 1rem;
+    padding: 1rem 2rem 1rem 2rem;
+    background-color: #b0c1b1;
+    margin: 1rem;
+}
+
+.list-view div {
+    height: 5rem;
+    display: list-item;
+}
+
+
+/*buttons*/
+
+/*general button rules*/
+
+button:hover {
+    cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background-color: #a96d80;
+}
+
+.toggle-btn:active {
+    background-color: #a96d80;
+    color: white;
+}
+
+#add-btn:hover {
+    background-color: rgb(192, 222, 132);
+}
+
+#add-btn:active {
+    background-color: rgb(174, 201, 119);
+    color: whitesmoke;
 }
