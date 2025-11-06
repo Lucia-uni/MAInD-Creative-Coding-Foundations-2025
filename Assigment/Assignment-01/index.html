@@ -3,50 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="Author" content="Lucia Ciapessoni">
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Assigment 01</title>
     <link rel="stylesheet" href="assets/style.css">
     <script src="assets/script.js" defer></script>
 </head>
+
 <body>
-<header>
+    <header>
 
         <!--title-->
-        <h1>Quotes & Aphorism</h1>
+        <h1>Quotes & Aphorisms</h1>
 
         <!--input and add button-->
         <div id="add-container">
-            <input type="text" id="task-input" placeholder="Add a new quote ...">
+            <input type="text" id="quote-input" placeholder="Add a new quote ...">
+            <input type="text" id="author-input" placeholder="Author">
             <button id="add-btn">+</button>            
         </div>
 
         <!--view list mode toggle-->
         <div id="view-toggle-container">
+            <div class="color-box"><input type="color" class="color-picker" id="color" value="#d89dad"></div>
             <button id="list-view-btn" class="toggle-btn">List view</button>
             <button id="card-view-btn" class="toggle-btn">Card view</button>
         </div>
+
+        
 
     </header>
 
     <main>
 
-        <!--to-do list-->
-        <div id="task-list-container" class="card-view">
-            <div>
-                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
-                <p class="author">Albert Einstein</p>
-            </div>
-            <div>
-                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
-                <p class="author">Albert Einstein</p>
-            </div>
-            <div>
-                <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
-                <p class="author">Albert Einstein</p>
-            </div>
+        <!--quotes-->
+        <div id="task-list-container" class="list-view">
+                <div class="quote-box">
+                    <button class="remover">X</button>
+                    <p class="quote">"Logic will take you from A to B. Imagination will take you everywhere"</p>
+                    <p class="author">Albert Einstein</p>
+                </div>
+                <div class="quote-box">
+                    <button class="remover">X</button>
+                    <p class="quote">"Here's to the crazy ones. The misfits. The rebels. The troublemakers. The round pegs in the square holes. The ones who see things differently. They're not fond of rules. And they have no respect for the status quo. You can quote them, disagree with them, glorify or vilify them. About the only thing you can't do is ignore them. Because they change things. They push the human race forward. And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do"</p>
+                    <p class="author">Steve Jobs</p>
+                </div>
+                <div class="quote-box">
+                    <button class="remover">X</button>
+                    <p class="quote">"I am so clever that sometimes I don't understand a single word of what I am saying"</p>
+                    <p class="author">Oscar Wilde</p>
+                </div>
         </div>
 
     </main>
-    
+
+
 </body>
 </html>

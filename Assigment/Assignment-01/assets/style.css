@@ -43,13 +43,35 @@ button {
     margin-bottom: 1rem;
 }
 
-#task-input {
+#quote-input {
     width: 100%;
     border: 1px solid black;
     padding: 1rem;
     border-radius: 1rem;
 }
 
+#author-input {
+    width: 100%;
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.quote-box {
+    position: relative; 
+}
+
+.remover {
+    position: absolute; 
+    top: 1rem; 
+    right: 1rem; 
+    font-size: 10px;
+    display: flex;
+    align-items: right;
+    padding: 0.2rem 0.3rem 0.2rem 0.3rem;
+    border-radius: 0.3rem;
+    background-color: whitesmoke;
+}
 
 /*view list mode toggle*/
 
@@ -63,8 +85,34 @@ button {
     width: 50%;
 }
 
+.color-box {
+    border: 1px solid black;
+    border-radius: 1rem;
+    width: 3rem;
+    height: 3rem;
+}
+.color-picker {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; 
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex; 
+  border-radius: 1rem;
+  cursor: pointer;
+}
 
-/*to-do list*/
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 1rem;
+}
 
 /*card-view*/
 
@@ -72,17 +120,13 @@ button {
     display: flex;
     flex-wrap: wrap;
     padding-left: 0;
-}
-
-div {
-    display: block;
-    width: 100%;
-    padding: 1rem;
+    margin-top: 1rem;
 }
 
 .card-view div {
     background-color: #b0c1b1;
-    height: 6rem;
+    min-height: 6rem;
+    height: auto;
     border: 1px solid black;
     border-radius: 1rem;
     display: block;
@@ -90,24 +134,48 @@ div {
     align-items: center;
     margin-bottom: 1rem;
     margin-top: 1rem;
+    padding: 1rem;
+    width: 100%;
 }
 
+.card-view p {
+    padding-right: 2rem;
+}
 
 /*list-view*/
 
 .list-view {
     border: 1px solid black;
     border-radius: 1rem;
-    padding: 1rem 2rem 1rem 2rem;
+    padding: 1rem 2rem 1rem 3rem;
     background-color: #b0c1b1;
-    margin: 1rem;
+    margin-top: 2rem;
 }
 
 .list-view div {
-    height: 5rem;
+    min-height: 5rem;
+    height: auto;
+    padding-bottom: 1rem;
     display: list-item;
 }
 
+.list-view .author {
+    text-align: left;
+}
+
+.list-view .quote {
+    padding-right: 2rem;
+}
+
+.list-view .remover {
+    top: 0.1rem;
+    right: 0.1rem; 
+    height: fit-content;
+    font-size: 10px;
+    padding: 0.2rem 0.3rem 0.2rem 0.3rem;
+    border-radius: 0.3rem;
+    background-color: whitesmoke;
+}
 
 /*buttons*/
 
@@ -127,10 +195,42 @@ button:hover {
 }
 
 #add-btn:hover {
-    background-color: rgb(192, 222, 132);
+    background-color: #308887;
 }
 
 #add-btn:active {
-    background-color: rgb(174, 201, 119);
+    background-color: #308887;
     color: whitesmoke;
+}
+
+.remover:hover {
+    background-color: #308887;
+}
+
+.remover:active {
+    background-color: #308887;
+    color: white;
+}
+
+@media only screen and (min-width: 600px){
+    .card-view {
+        display: flex;
+        justify-content: space-around;
+    }
+    .card-view .quote-box {
+        width: 42%;
+        flex-wrap: wrap;
+    }
+}
+
+@media only screen and (min-width: 780px){
+    .card-view {
+        display: flex;
+        justify-content: space-around;
+    }
+    .card-view .quote-box {
+        width: 30%;
+        flex-wrap: wrap;
+    }
+
 }
