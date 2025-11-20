@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="assets/script.js" defer></script>
+    <title>Hangman</title>
+</head>
+<body>
+    
+    <header>
+        <h1 id="title">Hangman</h1>
+    </header>
+
+    <!-- Overlay scuro -->
+    <div id="popup-overlay" class="hidden"></div>
+
+    <!-- Popup Win -->
+    <div id="popup-win" class="popup hidden">
+        <h2>YOU WIN! <br> 🎉</h2>
+        <p>Your score: <span id="win-score"></span></p>
+        <button id="btn-win">New Game</button>
+    </div>
+
+    <!-- Popup Game Over -->
+    <div id="popup-lose" class="popup hidden">
+        <h2>GAME OVER <br> 💀</h2>
+        <p>The word was: <span id="lose-word"></span></p>
+        <button id="btn-lose">Try Again</button>
+    </div>
+
+    <main>
+
+        <div id="popup-container">
+            <div id="avatar-choice-container">
+                <h1>Hangman</h1>
+
+                <ul id="avatar-list">
+                    <li id="choice-avatar-1" data-avatar="1"><img src="assets/img/option1.png"></li>
+                    <li id="choice-avatar-2" data-avatar="2"><img src="assets/img/option2.png"></li>
+                    <li id="choice-avatar-3" data-avatar="3"><img src="assets/img/option3.png"></li>
+                </ul>
+                
+                <p id="instructions">choose an avatar</p>
+
+            </div>
+
+        </div>
+
+
+        <div><p id="key-use">use your keyboard to play</p></div>
+
+        <div id="main-container">
+            <div id="left-side">
+                <div id="hangman">
+                    <div class="hidden" id="base"></div>
+                    <div class="hidden" id="vertical"></div>
+                    <div class="hidden" id="horizontal"></div>
+                    <div class="hidden" id="rope"></div>
+                    <div class="hidden" id="head" data-avatar="1"></div>
+                    <div class="hidden" id="body"></div>
+                    <div class="hidden" id="right-arm"></div>
+                    <div class="hidden" id="left-arm"></div>
+                    <div class="hidden" id="right-leg"></div>
+                    <div class="hidden" id="left-leg"></div>
+                </div>
+                <div id="word-display"></div>
+            </div>
+            <div id="right-side">
+                <!--<button id="new-game">skip word</button>-->
+                <div class="displays" id="wrong-letters"></div>
+                <div class="displays" id="message"></div>
+                <div class="displays" id="score-display">Your score: </div>
+            </div>
+        </div>
+        
+    </main>
+
+</body>
+</html>
