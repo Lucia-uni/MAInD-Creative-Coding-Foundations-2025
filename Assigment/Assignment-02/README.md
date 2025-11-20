@@ -94,3 +94,6 @@ Hide the pop-ups previously shown
 
 ### drawHangmanPart(errorCount)
 Shows a part of the Hangman with every increasing error
+
+## Content and data sources
+[Fail sound](https://pixabay.com/sound-effects/fail-234710/)
