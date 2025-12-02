@@ -1,201 +1,143 @@
-const WORD_LIST = ["APPLE", "HOUSE", "WATER", "MUSIC", "PEACE", "TRAIN", "EARTH", "OCEAN",
-    "GHOST", "CHAIR", "TABLE", "CLOUD", "RIVER", "BEACH", "LIGHT", "SHADOW",
-    "MAGIC", "MONEY", "STONE", "HEART", "HAPPY", "BRAVE", "SMART", "QUIET",
-    "FUNNY", "TIGER", "ZEBRA", "LION", "SNAKE", "MOUSE", "BREAD", "CHEESE",
-    "COFFEE", "SUGAR", "FLOUR", "GRAPE", "LEMON", "PIZZA", "SALAD", "SOUP",
-    "PAPER", "PENCIL", "BOOK", "CLOCK", "PHONE", "RADIO", "STREET", "TOWER",
-    "BRIDGE", "PARK", "FENCE", "GRASS", "FLOWER", "GARDEN", "SCHOOL", "STORE",
-    "DOCTOR", "POLICE", "FARMER", "ARTIST", "WRITER", "SINGER", "DANCER", "PILOT",
-    "TRUCK", "CARGO", "MOTOR", "CYCLE", "PLANE", "ROCKET", "SHOES", "SOCKS",
-    "SHIRT", "PANTS", "DRESS", "SKIRT", "GLOVE", "SCARF", "WINTER", "SUMMER",
-    "SPRING", "AUTUMN", "YESTERDAY", "TODAY", "TOMORROW", "FAMILY", "FRIEND",
-    "CHILD", "ADULT", "NEIGHBOR", "PROBLEM", "SOLUTION", "SYSTEM", "ENERGY",
-    "FUTURE", "GLOBAL", "HEALTH", "JOURNEY", "KINDNESS", "LIBRARY", "MINUTE",
-    "OFFICE", "QUALITY", "REASON"];
+const API_KEY = "-";
 
-let WORD = ''; //chosen word
-let RIGHT_LETTERS = []; //guessed letters
-let WRONG_LETTERS = []; //wrong letters
-const MAX_ATTEMPTS = 10; //total amount of attempts
-const FAILSOUND = new Audio('assets/audio/fail.mp3')
+const HOME_SCREEN = document.getElementById("home-screen");
+const GAME_CONTAINER = document.getElementById("main-container");
+const BTN_PLAY = document.getElementById("btn-play");
+const BTN_MENU = document.getElementById("btn-menu");
+const BTN_CATEGORY_MENU = document.getElementById("btn-category-menu");
+
+let WORD = "";
+let RIGHT_LETTERS = [];
+let WRONG_LETTERS = [];
+const MAX_ATTEMPTS = 10;
+
+const FAILSOUND = new Audio("assets/audio/fail.mp3");
+const clickSound = new Audio("assets/sfx/click.mp3");
+
+let SELECTED_CATEGORY = "fiction";
 
 let YOUR_SCORE = 0;
-const SCORE_DISPLAY = document.getElementById('score-display');
+const SCORE_DISPLAY = document.getElementById("score-display");
+const WORD_DISPLAY = document.getElementById("word-display");
+const WRONG_LETTERS_DISPLAY = document.getElementById("wrong-letters");
+const MESSAGE_DISPLAY = document.getElementById("message");
+const HANGMAN_DISPLAY = document.getElementById("hangman");
 
-const OVERLAY = document.getElementById('pop-up');
-
-const WORD_DISPLAY = document.getElementById('word-display');
-const WRONG_LETTERS_DISPLAY = document.getElementById('wrong-letters');
-const MESSAGE_DISPLAY = document.getElementById('message');
-const HANGMAN_DISPLAY = document.getElementById('hangman');
-const NEW_GAME = document.getElementById('new-game');
-
-
-function randomNumber(max) {
-    return Math.floor(Math.random()*max);
+function fetchBookTitle(callback) {
+    const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${SELECTED_CATEGORY}&maxResults=40&printType=books&key=${API_KEY}`;
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.items || data.items.length === 0) return callback("UNKNOWN");
+            const randomBook = data.items[Math.floor(Math.random() * data.items.length)];
+            let title = (randomBook.volumeInfo.title || "UNKNOWN")
+                .toUpperCase()
+                .replace(/[^A-Z0-9 ]/g, "")
+                .trim();
+            callback(title);
+        })
+        .catch(() => callback("ERROR"));
 }
 
 function initializeGame() {
-    //changeAvatar();
-
-    const RANDOM_INDEX = randomNumber(WORD_LIST.length);
-    WORD = WORD_LIST[RANDOM_INDEX];
-    RIGHT_LETTERS = Array(WORD.length).fill('_');
-    WRONG_LETTERS = [];
-    WORD_DISPLAY.textContent = RIGHT_LETTERS.join(' ');
-    WRONG_LETTERS_DISPLAY.textContent = `Wrong letters: ${WRONG_LETTERS.join(', ')}`;
-    MESSAGE_DISPLAY.textContent = '';
-
-    const parts = HANGMAN_DISPLAY.querySelectorAll('div');
-    parts.forEach(part => part.classList.add('hidden'));
-
-    console.log(WORD);
+    fetchBookTitle(title => {
+        WORD = title;
+        RIGHT_LETTERS = [];
+        WRONG_LETTERS = [];
+        for (let char of WORD) {
+            RIGHT_LETTERS.push(char === " " ? " " : "_");
+        }
+        updateWordDisplay();
+        WRONG_LETTERS_DISPLAY.textContent = "Wrong letters: ";
+        MESSAGE_DISPLAY.textContent = "";
+        HANGMAN_DISPLAY.querySelectorAll("div").forEach(p => p.classList.add("hidden"));
+        document.addEventListener("keydown", handleKeyPress);
+        BTN_CATEGORY_MENU.classList.remove("hidden");
+    });
 }
 
 function updateWordDisplay() {
-    WORD_DISPLAY.textContent = RIGHT_LETTERS.join(' ');
+    WORD_DISPLAY.innerHTML = RIGHT_LETTERS
+        .map(c => (c === " " ? "&nbsp;&nbsp;&nbsp;" : c))
+        .join(" ");
 }
 
 function updateWrongLetterDisplay() {
-    const ATTEMPTS_LEFT = MAX_ATTEMPTS - WRONG_LETTERS.length;
-    WRONG_LETTERS_DISPLAY.textContent = 
-        `Wrong letters: ${WRONG_LETTERS.join(', ')} | Attempts left: ${ATTEMPTS_LEFT}`;
-        FAILSOUND.play();
+    const attemptsLeft = MAX_ATTEMPTS - WRONG_LETTERS.length;
+    WRONG_LETTERS_DISPLAY.textContent =
+        `Wrong letters: ${WRONG_LETTERS.join(", ")} | Attempts left: ${attemptsLeft}`;
+    FAILSOUND.play();
 }
 
 function checkGameStatus() {
-    if (!RIGHT_LETTERS.includes('_')) {
-        MESSAGE_DISPLAY.textContent = 'YOU WIN!';
-        document.removeEventListener('keydown', handleKeyPress);
-
-        YOUR_SCORE ++;
-        SCORE_DISPLAY.innerHTML = 'Your score: ' + YOUR_SCORE;
-
+    if (!RIGHT_LETTERS.includes("_")) {
+        MESSAGE_DISPLAY.textContent = "YOU WIN!";
+        document.removeEventListener("keydown", handleKeyPress);
+        YOUR_SCORE++;
+        SCORE_DISPLAY.innerHTML = YOUR_SCORE;
         showPopup("win");
         return true;
     }
-
     if (WRONG_LETTERS.length >= MAX_ATTEMPTS) {
-        MESSAGE_DISPLAY.textContent = `GAME OVER! The word was: ${WORD}`;
-        document.removeEventListener('keydown', handleKeyPress);
-
+        MESSAGE_DISPLAY.textContent = `GAME OVER! The title was: ${WORD}`;
+        document.removeEventListener("keydown", handleKeyPress);
         showPopup("lose");
         return true;
     }
-
     return false;
 }
 
 function handleGuess(letter) {
     if (RIGHT_LETTERS.includes(letter) || WRONG_LETTERS.includes(letter)) {
-        MESSAGE_DISPLAY.textContent = `You already tried the letter '${letter}'.`;
+        MESSAGE_DISPLAY.textContent = `You already tried '${letter}'.`;
         return;
     }
     if (WORD.includes(letter)) {
-        MESSAGE_DISPLAY.textContent = 'Correct letter!';
         for (let i = 0; i < WORD.length; i++) {
-            if (WORD[i] === letter) {
-                RIGHT_LETTERS[i] = letter;
-            }
+            if (WORD[i] === letter) RIGHT_LETTERS[i] = letter;
         }
         updateWordDisplay();
-
     } else {
-        MESSAGE_DISPLAY.textContent = 'Wrong letter!';
         WRONG_LETTERS.push(letter);
         updateWrongLetterDisplay();
-
         drawHangmanPart(WRONG_LETTERS.length);
     }
-    
     checkGameStatus();
 }
 
-
 function handleKeyPress(event) {
     const key = event.key.toUpperCase();
-
-    if (key.length === 1 && key >= 'A' && key <= 'Z') {
-        if (!checkGameStatus()) {
-            handleGuess(key);
-        }
-    }
+    if (key >= "A" && key <= "Z" && key.length === 1) handleGuess(key);
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    initializeGame();
-    
-    document.addEventListener('keydown', handleKeyPress);
-
-    /*NEW_GAME.addEventListener('click', () => {
-    initializeGame();
-    document.addEventListener('keydown', handleKeyPress);
-    });*/
-});
-
-//Hangman
 function drawHangmanPart(errorCount) {
-    const parts = HANGMAN_DISPLAY.querySelectorAll('div');
-
-    if (errorCount >= 1 && errorCount <= 10) {
-
-        for (let i = 0; i < errorCount; i++) {
-            if (parts[i]) {
-                parts[i].classList.remove('hidden');
-            }
-        }
-    }
+    const parts = HANGMAN_DISPLAY.querySelectorAll("div");
+    if (parts[errorCount - 1]) parts[errorCount - 1].classList.remove("hidden");
 }
 
-const choiceAvatar1 = document.getElementById("choice-avatar-1");
-const choiceAvatar2 = document.getElementById("choice-avatar-2");
-const choiceAvatar3 = document.getElementById("choice-avatar-3");
-
-const avatarPopup = document.getElementById("avatar-choice-container");
-
-
-choiceAvatar1.addEventListener("click", () => {
-    console.log(choiceAvatar1);
-    changeAvatar(choiceAvatar1.dataset.avatar);
-    avatarPopup.classList.add("hidden");
-});
-
-choiceAvatar2.addEventListener("click", () => {
-    changeAvatar(choiceAvatar2.dataset.avatar);
-    avatarPopup.classList.add("hidden");
-});
-
-choiceAvatar3.addEventListener("click", () => {
-    changeAvatar(choiceAvatar3.dataset.avatar);
-    avatarPopup.classList.add("hidden");
-});
-
-function changeAvatar(avatarNumber) {
-    console.log("Changed avatar to: " + avatarNumber);
-    document.getElementById("head").dataset.avatar = avatarNumber;
-}
-
+/* ======================
+   POPUP VITTORIA/SCONFITTA
+   ====================== */
 const POPUP_OVERLAY = document.getElementById("popup-overlay");
 const POPUP_WIN = document.getElementById("popup-win");
 const POPUP_LOSE = document.getElementById("popup-lose");
-
 const WIN_SCORE = document.getElementById("win-score");
 const LOSE_WORD = document.getElementById("lose-word");
-
-const BTN_WIN = document.getElementById("btn-win");
-const BTN_LOSE = document.getElementById("btn-lose");
+document.getElementById("btn-win").onclick = () => {
+    hidePopups();
+    initializeGame();
+};
+document.getElementById("btn-lose").onclick = () => {
+    hidePopups();
+    initializeGame();
+};
 
 function showPopup(type) {
     POPUP_OVERLAY.classList.remove("hidden");
-
     if (type === "win") {
         WIN_SCORE.textContent = YOUR_SCORE;
         POPUP_WIN.classList.remove("hidden");
-    }
-
-    if (type === "lose") {
+    } else {
         LOSE_WORD.textContent = WORD;
         POPUP_LOSE.classList.remove("hidden");
     }
@@ -207,14 +149,91 @@ function hidePopups() {
     POPUP_LOSE.classList.add("hidden");
 }
 
-BTN_WIN.addEventListener("click", () => {
-    hidePopups();
-    initializeGame();
-    document.addEventListener("keydown", handleKeyPress);
+/* ======================
+   SCELTA AVATAR
+   ====================== */
+document.querySelectorAll("#avatar-list li").forEach(item => {
+    item.onclick = () => {
+        document.getElementById("head").dataset.avatar = item.dataset.avatar;
+        document.getElementById("avatar-choice-container").classList.add("hidden");
+        GAME_CONTAINER.classList.remove("hidden");
+        initializeGame();
+    };
 });
 
-BTN_LOSE.addEventListener("click", () => {
-    hidePopups();
-    initializeGame();
-    document.addEventListener("keydown", handleKeyPress);
+/* ======================
+   CATEGORIE
+   ====================== */
+const categoryItems = document.querySelectorAll("#category-list li");
+categoryItems.forEach(item => {
+    item.onclick = () => {
+        categoryItems.forEach(c => c.classList.remove("selected"));
+        item.classList.add("selected");
+        SELECTED_CATEGORY = item.dataset.category;
+
+        // Nascondi pannello categorie
+        document.getElementById("avatar-choice-container").classList.add("hidden");
+
+        // Mostra gioco
+        GAME_CONTAINER.classList.remove("hidden");
+
+        // Riattiva tastiera
+        document.addEventListener("keydown", handleKeyPress);
+
+        // Avvia nuova partita
+        initializeGame();
+    };
+});
+
+BTN_CATEGORY_MENU.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    document.removeEventListener("keydown", handleKeyPress);
+    GAME_CONTAINER.classList.add("fade-out");
+    setTimeout(() => {
+        GAME_CONTAINER.classList.add("hidden");
+        GAME_CONTAINER.classList.remove("fade-out");
+        BTN_CATEGORY_MENU.classList.add("hidden");
+        document.getElementById("avatar-choice-container").classList.remove("hidden");
+    }, 400);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Evidenzia categoria di default
+    const defaultCategory = document.querySelector(`#category-list li[data-category="${SELECTED_CATEGORY}"]`);
+    if (defaultCategory) defaultCategory.classList.add("selected");
+
+    // Mostra pannello avatar/categorie
+    const avatarContainer = document.getElementById("avatar-choice-container");
+    if (avatarContainer) avatarContainer.classList.remove("hidden");
+
+    // Nascondi gioco e pulsante categories
+    GAME_CONTAINER.classList.add("hidden");
+    BTN_CATEGORY_MENU.classList.add("hidden");
+});
+
+/* ======================
+   HOME SCREEN BUTTONS
+   ====================== */
+BTN_PLAY.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    HOME_SCREEN.classList.add("fade-out");
+    setTimeout(() => {
+        HOME_SCREEN.classList.add("hidden");
+        GAME_CONTAINER.classList.remove("hidden");
+        BTN_MENU.classList.remove("hidden");
+    }, 400);
+});
+
+BTN_MENU.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    GAME_CONTAINER.classList.add("fade-out");
+    setTimeout(() => {
+        GAME_CONTAINER.classList.add("hidden");
+        BTN_MENU.classList.add("hidden");
+        HOME_SCREEN.classList.remove("hidden");
+        HOME_SCREEN.classList.add("fade-in");
+    }, 400);
 });

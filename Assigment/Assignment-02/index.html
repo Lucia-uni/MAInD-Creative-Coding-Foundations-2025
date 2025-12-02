@@ -10,49 +10,61 @@
 <body>
     
     <header>
-        <h1 id="title">Hangman</h1>
+        <h1 id="title">BOOK HANGMAN</h1>
+        <h3>a cultural challenge</h3>
+        <button id="btn-category-menu" class="menu-button hidden">←</button>
     </header>
 
     <!-- Overlay scuro -->
     <div id="popup-overlay" class="hidden"></div>
-
     <!-- Popup Win -->
     <div id="popup-win" class="popup hidden">
         <h2>YOU WIN! <br> 🎉</h2>
         <p>Your score: <span id="win-score"></span></p>
         <button id="btn-win">New Game</button>
     </div>
-
     <!-- Popup Game Over -->
     <div id="popup-lose" class="popup hidden">
         <h2>GAME OVER <br> 💀</h2>
         <p>The word was: <span id="lose-word"></span></p>
         <button id="btn-lose">Try Again</button>
     </div>
-
     <main>
-
         <div id="popup-container">
             <div id="avatar-choice-container">
-                <h1>Hangman</h1>
-
+                <h1 id="title">BOOK HANGMAN</h1>
+                <h3>a cultural challenge</h3>
+                <h4 class = "instructions">choose an avatar</h4>
+                
                 <ul id="avatar-list">
                     <li id="choice-avatar-1" data-avatar="1"><img src="assets/img/option1.png"></li>
                     <li id="choice-avatar-2" data-avatar="2"><img src="assets/img/option2.png"></li>
                     <li id="choice-avatar-3" data-avatar="3"><img src="assets/img/option3.png"></li>
                 </ul>
                 
-                <p id="instructions">choose an avatar</p>
+                
+                <h4 class = "instructions">select a book category</h4>
+                <ul id="category-list">
+                    <li data-category="fiction">Fiction</li>
+                    <li data-category="mystery">Mystery</li>
+                    <li data-category="science+fiction">Sci-Fi</li>
+                    <li data-category="romance">Romance</li>
+                    <li data-category="children">Children</li>
+                    <li data-category="fantasy">Fantasy</li>
+                    <li data-category="history">History</li>
+                    <li data-category="education">Education</li>
+                </ul>
 
             </div>
-
         </div>
-
+        
+      
+        <div class="displays" id="score-display"><p id="score">Your score</p>00</div>
 
         <div><p id="key-use">use your keyboard to play</p></div>
 
         <div id="main-container">
-            <div id="left-side">
+            <div>
                 <div id="hangman">
                     <div class="hidden" id="base"></div>
                     <div class="hidden" id="vertical"></div>
@@ -66,16 +78,12 @@
                     <div class="hidden" id="left-leg"></div>
                 </div>
                 <div id="word-display"></div>
-            </div>
-            <div id="right-side">
                 <!--<button id="new-game">skip word</button>-->
                 <div class="displays" id="wrong-letters"></div>
                 <div class="displays" id="message"></div>
-                <div class="displays" id="score-display">Your score: </div>
             </div>
         </div>
         
     </main>
-
 </body>
 </html>

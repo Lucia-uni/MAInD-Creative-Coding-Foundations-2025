@@ -1,36 +1,36 @@
 # Hangman
 
-![](DOC/screen_hangmen_hanging.jpg)
+![](DOC/1.png)
 
 ## Brief
-Choose a “mini-game” to rebuild with HTML, CSS and JavaScript. The requirements are:
+Upgrade the **Assignment 02** by adding the use of data coming from an external web API. For example, fetch contents (audio, images, video, text, metadata) from online archives, AI generated contents (chatGPT API), data (weather, realtime traffic data, environmental data).
 
-- The webpage should be responsive
-- Choose an avatar at the beginning of the game
-- Keep track of the score of the player
-- Use the keyboard to control the game (indicate what are the controls in the page). You can also use buttons (mouse), but also keyboard.
-- Use some multimedia files (audio, video, …)
-- Implement an “automatic restart” in the game (that is not done via the refresh of the page)
+Have a look at the lesson about the API:
+
+[https://wind-submarine-3d4.notion.site/Lesson-5-200d516637bc811aba69e13b0ffe438f?pvs=74](https://www.notion.so/200d516637bc811aba69e13b0ffe438f?pvs=21)
+
+The application **must** have those requirements:
+
+- The webpage is responsive
+- Use a web API (you choose which one best fists for your project) to load the data and display them in the webpage
+- At least one multimedia file (for user feedback interactions, or content itself)
+- Develop a navigation system that allows the user to navigate different sections with related content and functionalities
 
 ## Project description
-The hangman mini-game is inspired to the hangman game everyone has played as a children on paper.
+Book hangman is a mini-game inspired to the hangman game everyone has played as a children on paper.
 In the real game there are two player: one has to guess the world chosen by the other player by the number of letters and with some trial and error on the letters. Every error means a step further hanging the man, while every correct attempt means knowing that letter of the word and I'm which place it is.
 
-In this project there is only one player, the one that have to guess which is the right word pressing the letters on the keyboard in order to obtain that word.
-The word is chosen in a random way and the user can only find out if a letter is present in word by pressing it on the keyboard.
-There are 10 attempts before the game is over, those are the steps to build the hang and hanging the man.
-After that or when the player guesses the right word before finishing the attempts, the game is over and the player has to start a new one, with a new word.
-
+In this project there is only one player, the one that have to guess which is the right book title from a chosen category pressing the letters on the keyboard in order to obtain the correct title. 
+Letters are guessed via keyboard, and each wrong guess draws a part of the hangman. The game automatically shows win/lose popups and can restart without refreshing the page.
 ## Screenshots
 
-![](DOC/screen_choose_avatar.jpg)
-![](DOC/screen_responsive_choose_avatar.jpg)
-![](DOC/screen_new_game.jpg)
-![](DOC/screen_responsive_new_game.jpg)
-![](DOC/screen_hangmen_hanging.jpg)
-![](DOC/screen_responsive_hangman_hanging.jpg)
-![](DOC/screen_game_over.jpg)
-![](DOC/screen_winner.jpg)
+![](DOC/1.png)
+![](DOC/6.png)
+![](DOC/2.png)
+![](DOC/3.png)
+![](DOC/3.png)
+![](DOC/7.png)
+![](DOC/5.png)
 
 
 ## Flowchart
@@ -56,44 +56,49 @@ flowchart TB
 
 ## Function list
 
-### handleKeyPress(event)
-Checs for the letters that are used to guess the right word
-
-### changeAvatar(avatarNumber)
-Allows the choice between the three version of the hangman face befor actually starting the game
-
 ### initializeGame()
-Makes the game start extracting a random word calling the function:
 
-#### randomNumber()
-It picks a randomic number in a choosen gap with a maximum
+Starts a new game, fetches a random book title from the selected category, and resets correct and wrong letters.
 
-### document.addEventListener('keydown')
-It checks for key pressed to show the correct and wrong letters thanks to the following functions:
+### fetchBookTitle(callback)
 
-#### updateWordDisplay()
-Shows the correct letters in their place inside the word calling the function:
+Calls the Google Books API to get a random book title from the selected category. The callback receives the cleaned book title.
 
-##### handleGuess(letter)
-Confront the letters to find out if they are correct or not, if not a part of the hangman is drawn.
+### handleKeyPress(event)
 
-#### updateWrongLetterDisplay()
-Shows the wrong letters that have been pressed and the left attempts to guess the word
+Handles keyboard input and sends the pressed letter to handleGuess().
 
-#### checkGameStatus() 
-Checks if all the blanck spaces for the letters are filled to show the pop-up calling the function:
+### handleGuess(letter)
 
-##### showPopup("win")
-Shows the pop-up YOU WIN! if all the blanck spaces are filled with letters and allow a new game
+Checks if the guessed letter is in the word. Updates the correct/incorrect letters display and draws hangman parts if needed.
 
-##### showPopup("lose")
-Shows the pop-up GAME OVER if you have no more attempts so you can start a new game
+### updateWordDisplay()
 
-##### hidePopups()
-Hide the pop-ups previously shown
+Displays the word with correctly guessed letters in their correct positions.
+
+### updateWrongLetterDisplay()
+
+Updates the wrong letters display and remaining attempts. Plays fail sound on incorrect guess.
+
+### checkGameStatus()
+
+Checks whether the player has won or lost. Shows the appropriate popup and stops further input.
 
 ### drawHangmanPart(errorCount)
-Shows a part of the Hangman with every increasing error
+
+Reveals the hangman part corresponding to the current number of wrong guesses.
+
+### showPopup(type)
+
+Shows the win or lose popup.
+type: "win" or "lose"
+
+### hidePopups()
+
+Hides all popups and overlay.
 
 ## Content and data sources
 [Fail sound](https://pixabay.com/sound-effects/fail-234710/)
+
+## API key documentation
+[API key](https://console.cloud.google.com/apis/credentials?project=oceanic-airway-480014-c9)
