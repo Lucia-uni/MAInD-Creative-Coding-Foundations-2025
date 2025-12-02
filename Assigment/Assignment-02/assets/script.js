@@ -10,18 +10,26 @@ let WORD = "";
 let RIGHT_LETTERS = [];
 let WRONG_LETTERS = [];
 const MAX_ATTEMPTS = 10;
-
-const FAILSOUND = new Audio("assets/audio/fail.mp3");
-const clickSound = new Audio("assets/sfx/click.mp3");
-
 let SELECTED_CATEGORY = "fiction";
-
 let YOUR_SCORE = 0;
+
 const SCORE_DISPLAY = document.getElementById("score-display");
 const WORD_DISPLAY = document.getElementById("word-display");
 const WRONG_LETTERS_DISPLAY = document.getElementById("wrong-letters");
 const MESSAGE_DISPLAY = document.getElementById("message");
 const HANGMAN_DISPLAY = document.getElementById("hangman");
+
+const FAILSOUND = new Audio("assets/audio/fail.mp3");
+const clickSound = new Audio("assets/sfx/click.mp3");
+
+const POPUP_OVERLAY = document.getElementById("popup-overlay");
+const POPUP_WIN = document.getElementById("popup-win");
+const POPUP_LOSE = document.getElementById("popup-lose");
+const WIN_SCORE = document.getElementById("win-score");
+const LOSE_WORD = document.getElementById("lose-word");
+
+
+// Initialization
 
 function fetchBookTitle(callback) {
     const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${SELECTED_CATEGORY}&maxResults=40&printType=books&key=${API_KEY}`;
@@ -56,6 +64,8 @@ function initializeGame() {
     });
 }
 
+// Display
+
 function updateWordDisplay() {
     WORD_DISPLAY.innerHTML = RIGHT_LETTERS
         .map(c => (c === " " ? "&nbsp;&nbsp;&nbsp;" : c))
@@ -67,24 +77,6 @@ function updateWrongLetterDisplay() {
     WRONG_LETTERS_DISPLAY.textContent =
         `Wrong letters: ${WRONG_LETTERS.join(", ")} | Attempts left: ${attemptsLeft}`;
     FAILSOUND.play();
-}
-
-function checkGameStatus() {
-    if (!RIGHT_LETTERS.includes("_")) {
-        MESSAGE_DISPLAY.textContent = "YOU WIN!";
-        document.removeEventListener("keydown", handleKeyPress);
-        YOUR_SCORE++;
-        SCORE_DISPLAY.innerHTML = YOUR_SCORE;
-        showPopup("win");
-        return true;
-    }
-    if (WRONG_LETTERS.length >= MAX_ATTEMPTS) {
-        MESSAGE_DISPLAY.textContent = `GAME OVER! The title was: ${WORD}`;
-        document.removeEventListener("keydown", handleKeyPress);
-        showPopup("lose");
-        return true;
-    }
-    return false;
 }
 
 function handleGuess(letter) {
@@ -115,22 +107,26 @@ function drawHangmanPart(errorCount) {
     if (parts[errorCount - 1]) parts[errorCount - 1].classList.remove("hidden");
 }
 
-/* ======================
-   POPUP VITTORIA/SCONFITTA
-   ====================== */
-const POPUP_OVERLAY = document.getElementById("popup-overlay");
-const POPUP_WIN = document.getElementById("popup-win");
-const POPUP_LOSE = document.getElementById("popup-lose");
-const WIN_SCORE = document.getElementById("win-score");
-const LOSE_WORD = document.getElementById("lose-word");
-document.getElementById("btn-win").onclick = () => {
-    hidePopups();
-    initializeGame();
-};
-document.getElementById("btn-lose").onclick = () => {
-    hidePopups();
-    initializeGame();
-};
+function checkGameStatus() {
+    if (!RIGHT_LETTERS.includes("_")) {
+        MESSAGE_DISPLAY.textContent = "YOU WIN!";
+        document.removeEventListener("keydown", handleKeyPress);
+        YOUR_SCORE++;
+        SCORE_DISPLAY.innerHTML = YOUR_SCORE;
+        showPopup("win");
+        return true;
+    }
+    if (WRONG_LETTERS.length >= MAX_ATTEMPTS) {
+        MESSAGE_DISPLAY.textContent = `GAME OVER! The title was: ${WORD}`;
+        document.removeEventListener("keydown", handleKeyPress);
+        showPopup("lose");
+        return true;
+    }
+    return false;
+}
+
+
+// Popups
 
 function showPopup(type) {
     POPUP_OVERLAY.classList.remove("hidden");
@@ -149,9 +145,18 @@ function hidePopups() {
     POPUP_LOSE.classList.add("hidden");
 }
 
-/* ======================
-   SCELTA AVATAR
-   ====================== */
+document.getElementById("btn-win").onclick = () => {
+    hidePopups();
+    initializeGame();
+};
+document.getElementById("btn-lose").onclick = () => {
+    hidePopups();
+    initializeGame();
+};
+
+
+// Avatar & Category Selection
+
 document.querySelectorAll("#avatar-list li").forEach(item => {
     item.onclick = () => {
         document.getElementById("head").dataset.avatar = item.dataset.avatar;
@@ -161,26 +166,15 @@ document.querySelectorAll("#avatar-list li").forEach(item => {
     };
 });
 
-/* ======================
-   CATEGORIE
-   ====================== */
 const categoryItems = document.querySelectorAll("#category-list li");
 categoryItems.forEach(item => {
     item.onclick = () => {
         categoryItems.forEach(c => c.classList.remove("selected"));
         item.classList.add("selected");
         SELECTED_CATEGORY = item.dataset.category;
-
-        // Nascondi pannello categorie
         document.getElementById("avatar-choice-container").classList.add("hidden");
-
-        // Mostra gioco
         GAME_CONTAINER.classList.remove("hidden");
-
-        // Riattiva tastiera
         document.addEventListener("keydown", handleKeyPress);
-
-        // Avvia nuova partita
         initializeGame();
     };
 });
@@ -198,23 +192,9 @@ BTN_CATEGORY_MENU.addEventListener("click", () => {
     }, 400);
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Evidenzia categoria di default
-    const defaultCategory = document.querySelector(`#category-list li[data-category="${SELECTED_CATEGORY}"]`);
-    if (defaultCategory) defaultCategory.classList.add("selected");
 
-    // Mostra pannello avatar/categorie
-    const avatarContainer = document.getElementById("avatar-choice-container");
-    if (avatarContainer) avatarContainer.classList.remove("hidden");
+// Menu buttons
 
-    // Nascondi gioco e pulsante categories
-    GAME_CONTAINER.classList.add("hidden");
-    BTN_CATEGORY_MENU.classList.add("hidden");
-});
-
-/* ======================
-   HOME SCREEN BUTTONS
-   ====================== */
 BTN_PLAY.addEventListener("click", () => {
     clickSound.currentTime = 0;
     clickSound.play();
@@ -236,4 +216,16 @@ BTN_MENU.addEventListener("click", () => {
         HOME_SCREEN.classList.remove("hidden");
         HOME_SCREEN.classList.add("fade-in");
     }, 400);
+});
+
+
+// Page Load
+
+document.addEventListener("DOMContentLoaded", () => {
+    const defaultCategory = document.querySelector(`#category-list li[data-category="${SELECTED_CATEGORY}"]`);
+    if (defaultCategory) defaultCategory.classList.add("selected");
+    const avatarContainer = document.getElementById("avatar-choice-container");
+    if (avatarContainer) avatarContainer.classList.remove("hidden");
+    GAME_CONTAINER.classList.add("hidden");
+    BTN_CATEGORY_MENU.classList.add("hidden");
 });
